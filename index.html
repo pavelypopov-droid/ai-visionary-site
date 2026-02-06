@@ -9,3 +9,364 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #08080a;
+            --bg2: #0e0e12;
+            --bg3: #141418;
+            --card: #18181e;
+            --card-hover: #1e1e26;
+            --accent: #c8ff00;
+            --accent2: #a0cc00;
+            --accent-dim: rgba(200,255,0,0.08);
+            --white: #eaeaee;
+            --gray: #8a8a96;
+            --muted: #55555f;
+            --border: rgba(255,255,255,0.06);
+            --serif: 'Playfair Display', Georgia, serif;
+            --sans: 'Outfit', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        ::selection { background: var(--accent); color: var(--bg); }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--white); line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        body::after { content:''; position:fixed; inset:0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; }
+
+        nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.2rem 2rem; display:flex; justify-content:space-between; align-items:center; background:rgba(8,8,10,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
+        .nav-logo { font-family:var(--serif); font-size:1.3rem; font-weight:700; color:var(--white); text-decoration:none; }
+        .nav-logo span { color:var(--accent); }
+        .nav-links { display:flex; gap:2rem; align-items:center; }
+        .nav-links a { color:var(--gray); text-decoration:none; font-size:0.85rem; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; transition:color 0.3s; }
+        .nav-links a:hover { color:var(--accent); }
+
+        .hero { min-height:100vh; display:flex; align-items:center; padding:8rem 2rem 4rem; position:relative; overflow:hidden; }
+        .hero::before { content:''; position:absolute; top:-30%; right:-20%; width:800px; height:800px; background:radial-gradient(circle, rgba(200,255,0,0.06) 0%, transparent 70%); pointer-events:none; }
+        .hero-inner { max-width:1200px; margin:0 auto; width:100%; position:relative; z-index:1; }
+        .hero-label { font-family:var(--mono); font-size:0.8rem; color:var(--accent); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:1.5rem; opacity:0; animation:fadeUp 0.8s ease forwards 0.2s; }
+        .hero-title { font-family:var(--serif); font-size:clamp(3rem,7vw,6rem); font-weight:400; line-height:1.08; letter-spacing:-0.03em; margin-bottom:2rem; opacity:0; animation:fadeUp 0.8s ease forwards 0.4s; }
+        .hero-title em { font-style:italic; color:var(--accent); }
+        .hero-sub { font-size:1.2rem; color:var(--gray); max-width:640px; line-height:1.7; margin-bottom:3rem; font-weight:300; opacity:0; animation:fadeUp 0.8s ease forwards 0.6s; }
+        .hero-stats { display:flex; gap:3.5rem; flex-wrap:wrap; opacity:0; animation:fadeUp 0.8s ease forwards 0.8s; }
+        .stat-num { font-family:var(--serif); font-size:2.8rem; font-weight:700; color:var(--accent); line-height:1; }
+        .stat-label { font-size:0.82rem; color:var(--muted); margin-top:0.3rem; text-transform:uppercase; letter-spacing:0.06em; }
+
+        section { padding:6rem 2rem; }
+        .container { max-width:1200px; margin:0 auto; }
+        .section-label { font-family:var(--mono); font-size:0.75rem; color:var(--accent); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:1rem; }
+        .section-title { font-family:var(--serif); font-size:clamp(2rem,4vw,3.2rem); font-weight:400; line-height:1.15; letter-spacing:-0.02em; margin-bottom:1rem; }
+        .section-title em { font-style:italic; color:var(--accent); }
+        .section-desc { font-size:1.05rem; color:var(--gray); max-width:640px; line-height:1.7; font-weight:300; margin-bottom:3rem; }
+
+        #about { background:var(--bg2); }
+        .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+        .about-text p { color:var(--gray); margin-bottom:1.2rem; font-weight:300; font-size:1.02rem; }
+        .about-text p strong { color:var(--white); font-weight:600; }
+        .about-cards { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .about-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; transition:all 0.3s; }
+        .about-card:hover { border-color:rgba(200,255,0,0.15); background:var(--card-hover); transform:translateY(-2px); }
+        .about-card-icon { font-size:1.6rem; margin-bottom:0.7rem; }
+        .about-card-title { font-weight:600; font-size:0.92rem; margin-bottom:0.3rem; }
+        .about-card-desc { font-size:0.8rem; color:var(--muted); line-height:1.5; }
+
+        .expertise-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+        .exp-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:2rem; transition:all 0.4s; position:relative; overflow:hidden; }
+        .exp-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),transparent); opacity:0; transition:opacity 0.4s; }
+        .exp-card:hover { border-color:rgba(200,255,0,0.12); background:var(--card-hover); transform:translateY(-3px); }
+        .exp-card:hover::before { opacity:1; }
+        .exp-icon { width:44px; height:44px; background:var(--accent-dim); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:1.2rem; }
+        .exp-title { font-weight:600; font-size:1.05rem; margin-bottom:0.6rem; }
+        .exp-desc { font-size:0.88rem; color:var(--gray); line-height:1.6; font-weight:300; }
+
+        #career { background:var(--bg2); }
+        .timeline { position:relative; padding-left:3rem; }
+        .timeline::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--accent),var(--border)); }
+        .timeline-item { position:relative; margin-bottom:3rem; padding-left:1.5rem; }
+        .timeline-item::before { content:''; position:absolute; left:-3.55rem; top:0.4rem; width:12px; height:12px; background:var(--accent); border-radius:50%; box-shadow:0 0 12px rgba(200,255,0,0.4); }
+        .timeline-year { font-family:var(--mono); font-size:0.78rem; color:var(--accent); letter-spacing:0.08em; margin-bottom:0.4rem; }
+        .timeline-role { font-weight:600; font-size:1.15rem; margin-bottom:0.2rem; }
+        .timeline-company { color:var(--gray); font-size:0.92rem; margin-bottom:0.6rem; }
+        .timeline-desc { font-size:0.88rem; color:var(--muted); line-height:1.6; }
+        .timeline-highlight { display:inline-block; background:var(--accent-dim); border:1px solid rgba(200,255,0,0.15); border-radius:6px; padding:0.2rem 0.7rem; font-size:0.78rem; color:var(--accent); margin-top:0.5rem; margin-right:0.4rem; }
+
+        .articles-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; }
+        .article-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:2rem; transition:all 0.4s; cursor:pointer; }
+        .article-card:hover { border-color:rgba(200,255,0,0.15); background:var(--card-hover); transform:translateY(-3px); }
+        .article-tag { font-family:var(--mono); font-size:0.7rem; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.8rem; }
+        .article-title { font-family:var(--serif); font-size:1.3rem; font-weight:400; line-height:1.3; margin-bottom:0.8rem; }
+        .article-excerpt { font-size:0.88rem; color:var(--gray); line-height:1.6; font-weight:300; }
+        .article-full { display:none; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+        .article-card.expanded .article-full { display:block; }
+        .article-full p { font-size:0.9rem; color:var(--gray); line-height:1.75; margin-bottom:1rem; font-weight:300; }
+        .article-full p strong { color:var(--white); font-weight:500; }
+        .article-toggle { font-family:var(--mono); font-size:0.75rem; color:var(--accent); margin-top:1rem; cursor:pointer; }
+
+        .mentor-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+        .mentor-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:2rem; text-align:center; transition:all 0.4s; }
+        .mentor-card:hover { border-color:rgba(200,255,0,0.15); transform:translateY(-3px); }
+        .mentor-icon { font-size:2.5rem; margin-bottom:1rem; }
+        .mentor-title { font-weight:600; font-size:1.05rem; margin-bottom:0.6rem; }
+        .mentor-desc { font-size:0.88rem; color:var(--gray); line-height:1.6; font-weight:300; }
+
+        .vision-section { background:var(--bg); padding:8rem 2rem; text-align:center; position:relative; }
+        .vision-section::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(200,255,0,0.05) 0%,transparent 70%); pointer-events:none; }
+        .vision-quote { font-family:var(--serif); font-size:clamp(1.6rem,3.5vw,2.6rem); font-weight:400; line-height:1.35; max-width:800px; margin:0 auto; position:relative; z-index:1; font-style:italic; }
+        .vision-quote em { color:var(--accent); }
+        .vision-author { margin-top:2rem; font-family:var(--mono); font-size:0.8rem; color:var(--muted); letter-spacing:0.1em; }
+
+        #contact { background:var(--bg2); border-top:1px solid var(--border); }
+        .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+        .contact-item { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; }
+        .contact-icon { width:44px; height:44px; background:var(--accent-dim); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+        .contact-label { font-size:0.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+        .contact-value { font-size:1rem; }
+        .contact-value a { color:var(--white); text-decoration:none; transition:color 0.3s; }
+        .contact-value a:hover { color:var(--accent); }
+        .contact-cta { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:2.5rem; }
+        .contact-cta h3 { font-family:var(--serif); font-size:1.5rem; margin-bottom:1rem; }
+        .contact-cta p { color:var(--gray); font-size:0.95rem; line-height:1.7; margin-bottom:1.5rem; font-weight:300; }
+        .btn { display:inline-flex; align-items:center; gap:0.5rem; background:var(--accent); color:var(--bg); font-family:var(--sans); font-size:0.9rem; font-weight:600; padding:0.85rem 2rem; border-radius:8px; text-decoration:none; transition:all 0.3s; }
+        .btn:hover { background:var(--accent2); transform:translateY(-1px); box-shadow:0 4px 20px rgba(200,255,0,0.2); }
+
+        footer { padding:2rem; text-align:center; border-top:1px solid var(--border); font-size:0.8rem; color:var(--muted); }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        .reveal { opacity:0; transform:translateY(30px); transition:all 0.7s ease; }
+        .reveal.visible { opacity:1; transform:translateY(0); }
+
+        .hamburger { display:none; background:none; border:none; cursor:pointer; padding:0.5rem; }
+        .hamburger span { display:block; width:22px; height:2px; background:var(--white); margin:5px 0; transition:0.3s; }
+        @media (max-width:768px) {
+            .hamburger { display:block; }
+            .nav-links { display:none; position:absolute; top:100%; left:0; right:0; background:rgba(8,8,10,0.95); flex-direction:column; padding:1.5rem 2rem; gap:1rem; border-bottom:1px solid var(--border); }
+            .nav-links.active { display:flex; }
+            .hero { padding:6rem 1.5rem 3rem; }
+            .hero-stats { gap:2rem; }
+            section { padding:4rem 1.5rem; }
+            .about-grid, .contact-grid { grid-template-columns:1fr; gap:2rem; }
+            .expertise-grid, .mentor-grid { grid-template-columns:1fr; }
+            .articles-grid { grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="nav-logo">PP<span>.</span></a>
+    <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('active')"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+        <a href="#about">Обо мне</a>
+        <a href="#expertise">Экспертиза</a>
+        <a href="#career">Опыт</a>
+        <a href="#articles">Статьи</a>
+        <a href="#mentoring">Менторинг</a>
+        <a href="#contact">Контакты</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-label">// AI-визионер · CIO · Ментор</div>
+        <h1 class="hero-title">Павел Попов —<br>строю <em>будущее</em><br>с помощью AI</h1>
+        <p class="hero-sub">25 лет трансформирую бизнес через технологии. От ИТ-стратегий крупнейших банков до внедрения AI и речевых технологий — создаю проекты, которые оставляют след в отрасли.</p>
+        <div class="hero-stats">
+            <div><div class="stat-num">150+</div><div class="stat-label">Проектов</div></div>
+            <div><div class="stat-num">25</div><div class="stat-label">Лет опыта</div></div>
+            <div><div class="stat-num">$25M+</div><div class="stat-label">ИТ-бюджет / год</div></div>
+            <div><div class="stat-num">6</div><div class="stat-label">AI-решений внедрено</div></div>
+        </div>
+    </div>
+</section>
+
+<section id="about">
+    <div class="container reveal">
+        <div class="section-label">// 01 — Обо мне</div>
+        <div class="about-grid">
+            <div class="about-text">
+                <h2 class="section-title">Визионер на стыке <em>бизнеса и AI</em></h2>
+                <p>За 25 лет в сфере ИТ, информационной безопасности и AI я реализовал более 150 проектов в <strong>ФинТехе и КиберТехе</strong> России и Средней Азии.</p>
+                <p>Моя уникальная экспертиза — в балансировке между стоимостью и качеством решений, а также в создании команд, способных быстро решать сложные задачи. Я создаю <strong>значимые проекты, которые оставляют след в отрасли.</strong></p>
+                <p>Совмещаю роли <strong>CIO крупного банка</strong> и <strong>технического директора</strong> ведущего ИТ-интегратора — уникальное видение как со стороны заказчика, так и поставщика.</p>
+                <p><strong>Образование:</strong> МГУ им. М.В. Ломоносова, Физический факультет. Аспирантура МГУПИ. Сколково, ВШЭ (NLP, Blockchain).</p>
+            </div>
+            <div class="about-cards">
+                <div class="about-card"><div class="about-card-icon">🧠</div><div class="about-card-title">AI & ML</div><div class="about-card-desc">Речевая аналитика, LLM/RAG, скоринг, фрод-мониторинг, AI-driven кодинг</div></div>
+                <div class="about-card"><div class="about-card-icon">🏦</div><div class="about-card-title">Банкинг</div><div class="about-card-desc">Core-системы, ДБО, контакт-центры, Open Banking, трансформация</div></div>
+                <div class="about-card"><div class="about-card-icon">🔐</div><div class="about-card-title">Кибербез</div><div class="about-card-desc">SIEM, DLP, SOC, стратегия ИБ, комплаенс</div></div>
+                <div class="about-card"><div class="about-card-icon">📐</div><div class="about-card-title">Стратегия</div><div class="about-card-desc">ИТ-стратегии, бюджетирование, портфели проектов, Agile/PMBoK</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="expertise">
+    <div class="container reveal">
+        <div class="section-label">// 02 — Экспертиза</div>
+        <h2 class="section-title">Что я делаю <em>лучше всего</em></h2>
+        <p class="section-desc">Глубокая экспертиза на стыке AI, банковских технологий и цифровой трансформации</p>
+        <div class="expertise-grid">
+            <div class="exp-card"><div class="exp-icon">🤖</div><div class="exp-title">Речевые технологии & AI</div><div class="exp-desc">Виртуальные ассистенты, речевая аналитика, голосовая биометрия, LLM с RAG. Вывел компанию в лидеры рынка за 6 месяцев.</div></div>
+            <div class="exp-card"><div class="exp-icon">📊</div><div class="exp-title">ИТ-стратегия</div><div class="exp-desc">Комплексные ИТ-стратегии для банков. Target Architecture, IT Operations Model, дорожные карты трансформации.</div></div>
+            <div class="exp-card"><div class="exp-icon">⚡</div><div class="exp-title">Цифровая трансформация</div><div class="exp-desc">От монолитов к микросервисам, API-экономика, DevOps/CI/CD. $25M+ годовой ИТ-бюджет под управлением.</div></div>
+            <div class="exp-card"><div class="exp-icon">🎯</div><div class="exp-title">Управление проектами</div><div class="exp-desc">150+ проектов. Кросс-функциональные команды до 60 человек. PMBoK, Agile, ITIL.</div></div>
+            <div class="exp-card"><div class="exp-icon">👥</div><div class="exp-title">Построение команд</div><div class="exp-desc">Масштабирование от 9 до 120 человек. IT-хабы и центры компетенций. Привлечение талантов.</div></div>
+            <div class="exp-card"><div class="exp-icon">💰</div><div class="exp-title">Развитие бизнеса</div><div class="exp-desc">$3M дополнительной выручки за год (×10). Портфель 1 млрд+ ₽. Вывод продуктов на новые рынки.</div></div>
+        </div>
+    </div>
+</section>
+
+<section id="career">
+    <div class="container reveal">
+        <div class="section-label">// 03 — Карьера</div>
+        <h2 class="section-title">Путь от инженера до <em>CIO</em></h2>
+        <p class="section-desc">Ключевые этапы профессионального роста</p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-year">2023 — 2026</div>
+                <div class="timeline-role">Chief Information Officer</div>
+                <div class="timeline-company">АКБ «Туронбанк» — крупный государственный банк Узбекистана</div>
+                <div class="timeline-desc">Трансформация ИТ и ИБ за 4 месяца. Создание AI-направления. IT-хаб из 4 команд (60 чел). +30% SLA.</div>
+                <span class="timeline-highlight">ИТ-стратегия</span><span class="timeline-highlight">AI</span><span class="timeline-highlight">$25M бюджет</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2022 — 2026</div>
+                <div class="timeline-role">Технический директор</div>
+                <div class="timeline-company">U-BSSYS — ведущий ИТ-интегратор Средней Азии</div>
+                <div class="timeline-desc">Лидер рынка речевых технологий за 6 мес. 6 решений в банках и телекоме. Продажи клиентов +20%, затраты −30-40%.</div>
+                <span class="timeline-highlight">Речевые технологии</span><span class="timeline-highlight">$3M выручки</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2021 — 2022</div>
+                <div class="timeline-role">Исполнительный директор</div>
+                <div class="timeline-company">ПСБ-Лаб — ИТ-интегратор банка ТОП-5</div>
+                <div class="timeline-desc">Команда с нуля: 9 → 120 человек. 10+ проектов импортозамещения на 3 млрд ₽. Создал AI-направление.</div>
+                <span class="timeline-highlight">9→120 чел</span><span class="timeline-highlight">3 млрд ₽</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2019 — 2021</div>
+                <div class="timeline-role">Директор по развитию бизнеса</div>
+                <div class="timeline-company">Bell Integrator</div>
+                <div class="timeline-desc">2 клиента из банков ТОП-6, +5 млрд ₽ выручки. Команда 100+ человек.</div>
+                <span class="timeline-highlight">+5 млрд ₽</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">2016 — 2019</div>
+                <div class="timeline-role">Business Development Director</div>
+                <div class="timeline-company">BSS (Бэнкс Софт Системс)</div>
+                <div class="timeline-desc">50+ проектов в банковском секторе. Личный портфель более 1 млрд ₽/год.</div>
+                <span class="timeline-highlight">50+ проектов</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-year">1999 — 2016</div>
+                <div class="timeline-role">Руководящие должности в ИТ</div>
+                <div class="timeline-company">Крупнейшие ИТ-интеграторы России</div>
+                <div class="timeline-desc">100+ проектов федерального масштаба. Создание и трансформация команд и архитектур.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="vision-section">
+    <div class="container reveal">
+        <div class="section-label">// Видение</div>
+        <blockquote class="vision-quote">«Дистанционный банкинг стал основной ареной борьбы за клиента. Цифровизация — это уже не проект <em>"сделать приложение"</em>, а история про скорость изменений, данные и архитектуру»</blockquote>
+        <div class="vision-author">— Павел Попов</div>
+    </div>
+</section>
+
+<section id="articles">
+    <div class="container reveal">
+        <div class="section-label">// 04 — Статьи и экспертиза</div>
+        <h2 class="section-title">Публикации и <em>мысли</em></h2>
+        <p class="section-desc">Авторские материалы о AI, речевых технологиях и цифровой трансформации</p>
+        <div class="articles-grid">
+            <div class="article-card" onclick="this.classList.toggle('expanded');this.querySelector('.article-toggle').textContent=this.classList.contains('expanded')?'← Свернуть':'→ Развернуть'">
+                <div class="article-tag">Речевые технологии · AI</div>
+                <div class="article-title">От виртуальных ассистентов до LLM с RAG: почему начинать нужно с речевой аналитики</div>
+                <div class="article-excerpt">Прежде чем внедрять виртуальных ассистентов или LLM, стоит начать с речевой аналитики — она даёт фундамент для эффективной автоматизации.</div>
+                <div class="article-full">
+                    <p>Многие компании видят в виртуальных ассистентах решение для автоматизации — меньше операторов, меньше затрат. Но <strong>как понять, где именно они будут полезны?</strong></p>
+                    <p>Речевая аналитика позволяет проанализировать 100% взаимодействий с клиентами, выявить частотные темы и проблемы качества — и только потом строить AI на прочном фундаменте.</p>
+                    <p><strong>LLM с RAG</strong> позволяют обращаться к базам знаний для точных ответов. Они могут быть «суфлёрами» для операторов или полностью заменить скрипты.</p>
+                </div>
+                <div class="article-toggle">→ Развернуть</div>
+            </div>
+            <div class="article-card" onclick="this.classList.toggle('expanded');this.querySelector('.article-toggle').textContent=this.classList.contains('expanded')?'← Свернуть':'→ Развернуть'">
+                <div class="article-tag">Банкинг · Цифровизация</div>
+                <div class="article-title">ДБО в Узбекистане: от «дополнительного канала» к основной арене борьбы за клиента</div>
+                <div class="article-excerpt">За 5 лет число пользователей ДБО выросло в 4,7 раза. 2025-й — год, когда цифровизация стала про скорость, данные и архитектуру.</div>
+                <div class="article-full">
+                    <p>Рынок перешёл к модели «<strong>цифровизация вокруг клиента и экономики</strong>». Драйверы: eKYC, Open Banking, приватизация, конкуренция финтехов.</p>
+                    <p>Стоп-факторы: кадровый голод, разрыв в ИТ-зрелости, стоимость технологий. Прогноз: mobile-first, рост AI, API-экономика, консолидация рынка.</p>
+                </div>
+                <div class="article-toggle">→ Развернуть</div>
+            </div>
+            <div class="article-card" onclick="this.classList.toggle('expanded');this.querySelector('.article-toggle').textContent=this.classList.contains('expanded')?'← Свернуть':'→ Развернуть'">
+                <div class="article-tag">AI · Безопасность</div>
+                <div class="article-title">Голосовая биометрия: идентификация, верификация и защита от дипфейков</div>
+                <div class="article-excerpt">Голосовая биометрия идентифицирует клиента за секунды. Но как защититься от спуфинга и клонирования голоса?</div>
+                <div class="article-full">
+                    <p>Голос — уникальный биометрический параметр. Два сценария: <strong>идентификация</strong> и <strong>верификация</strong>. Работает как часть мультифакторной аутентификации.</p>
+                    <p>Главный риск — спуфинг. Решение: системы anti-spoofing на нейросетях, выявляющие артефакты синтетической речи.</p>
+                </div>
+                <div class="article-toggle">→ Развернуть</div>
+            </div>
+            <div class="article-card" onclick="this.classList.toggle('expanded');this.querySelector('.article-toggle').textContent=this.classList.contains('expanded')?'← Свернуть':'→ Развернуть'">
+                <div class="article-tag">Внедрение · Консалтинг</div>
+                <div class="article-title">Идеальное внедрение речевых технологий и AI</div>
+                <div class="article-excerpt">Как реализовать проект внедрения AI, чтобы получить максимальный эффект? Составляющие идеального внедрения.</div>
+                <div class="article-full">
+                    <p>Актуально для <strong>банков, телекома, ритейла, госсектора</strong> — любых организаций с большим потоком обращений.</p>
+                    <p>Ключевое: понимание бизнес-задач, подготовка инфраструктуры, пилот, партнёрство с интегратором, поэтапное масштабирование. Бизнес с AI получает <strong>серьёзные конкурентные преимущества</strong>.</p>
+                </div>
+                <div class="article-toggle">→ Развернуть</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="mentoring">
+    <div class="container reveal">
+        <div class="section-label">// 05 — Менторинг</div>
+        <h2 class="section-title">Чем могу <em>помочь</em></h2>
+        <p class="section-desc">Делюсь 25-летним опытом — от стратегии до операционного управления</p>
+        <div class="mentor-grid">
+            <div class="mentor-card"><div class="mentor-icon">🎯</div><div class="mentor-title">ИТ-стратегия</div><div class="mentor-desc">Разработка ИТ-стратегии банка или финтеха. Целевая архитектура, дорожная карта, бюджет.</div></div>
+            <div class="mentor-card"><div class="mentor-icon">🚀</div><div class="mentor-title">AI-трансформация</div><div class="mentor-desc">Запуск AI с нуля. Речевая аналитика, виртуальные ассистенты, LLM, скоринг, антифрод.</div></div>
+            <div class="mentor-card"><div class="mentor-icon">👨‍💼</div><div class="mentor-title">Менторинг CIO/CTO</div><div class="mentor-desc">Управление бюджетом, командой, портфелем проектов, отношениями с бизнесом.</div></div>
+            <div class="mentor-card"><div class="mentor-icon">🏗️</div><div class="mentor-title">Построение команд</div><div class="mentor-desc">Масштабирование ИТ-команды, IT-хабы, центры компетенций, DevOps-культура.</div></div>
+            <div class="mentor-card"><div class="mentor-icon">📱</div><div class="mentor-title">Цифровые каналы</div><div class="mentor-desc">ДБО, мобильный банкинг, контакт-центры, омниканальность, Open Banking.</div></div>
+            <div class="mentor-card"><div class="mentor-icon">🔒</div><div class="mentor-title">Кибербезопасность</div><div class="mentor-desc">Стратегия ИБ, SIEM/DLP/SOC, комплаенс, защита финансового сектора.</div></div>
+        </div>
+    </div>
+</section>
+
+<section id="contact">
+    <div class="container reveal">
+        <div class="section-label">// 06 — Контакты</div>
+        <h2 class="section-title">Давайте <em>поговорим</em></h2>
+        <p class="section-desc">Открыт к проектам, консультациям и менторингу</p>
+        <div class="contact-grid">
+            <div>
+                <div class="contact-item"><div class="contact-icon">📧</div><div><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:popov@iofm.ru">popov@iofm.ru</a></div></div></div>
+                <div class="contact-item"><div class="contact-icon">📱</div><div><div class="contact-label">Телефон</div><div class="contact-value"><a href="tel:+998951480206">+998 95 148 02 06</a></div></div></div>
+                <div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-label">Локация</div><div class="contact-value">Ташкент, Узбекистан</div></div></div>
+                <div class="contact-item"><div class="contact-icon">✈️</div><div><div class="contact-label">Telegram</div><div class="contact-value"><a href="https://t.me/+998951480206">Написать в Telegram</a></div></div></div>
+            </div>
+            <div class="contact-cta">
+                <h3>Готовы к трансформации?</h3>
+                <p>Расскажите о вашем проекте — обсудим, как AI и современные технологии помогут вашему бизнесу.</p>
+                <a href="mailto:popov@iofm.ru" class="btn">Написать мне →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer><div class="container">© 2026 Павел Попов. AI-визионер, CIO, Ментор.</div></footer>
+
+<script>
+const observer = new IntersectionObserver(entries => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('active')));
+</script>
+</body>
+</html>
